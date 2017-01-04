@@ -2,6 +2,10 @@
   "name": "nbatoday",
   "version": "1.0.0",
   "description": "App for viewing NBA stats and scores",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flynnmattson/nbatoday"
+  },
   "main": "server.js",
   "scripts": {
     "test": "node server.js",
@@ -41,7 +45,8 @@
     "gulp-util": "^3.0.7",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.6.0"
+    "watchify": "^3.6.0",
+    "promise": "^7.1.1"
   },
   "author": "Flynn Mattson",
   "license": "MIT"
