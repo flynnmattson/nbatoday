@@ -84,9 +84,24 @@ function expressRoutes(app){
    */
   app.get('/api/game/:id', function(req, res, next) {
     var gameId = req.params.id;
+    function processData(gameObj){
+      var stats = [];
+      let temp = {};
+      for(let i=0; i<gameObj.rowSet.length; i++){
+        temp = {};
+        for(let j=0; j<gameObj.headers.length; j++){
+          temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+        }
+        stats.push(temp);
+      }
+      return stats;
+    }
     boxScore.getBoxscore(gameId, (err) => {
       if(boxScore.statusCode === 200 && !err){
-        res.send(boxScore.results['boxscore']);
+        res.send({
+          player_stats: processData(boxScore.results['boxscore'].resultSets[0]),
+          team_stats: processData(boxScore.results['boxscore'].resultSets[1])
+        });
       }else{
         return next(err);
       }

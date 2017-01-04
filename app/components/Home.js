@@ -20,8 +20,8 @@ class Home extends React.Component{
   componentDidMount(){
     HomeStore.listen(this.onChange);
     HomeActions.getScoreboard();
-    // Set interval to continually refresh the scoreboard for the user.
-    var intervalId = setInterval(this.refreshScoreboard, 10000);
+    // Set interval to continually refresh the scoreboard every minute for the user.
+    var intervalId = setInterval(this.refreshScoreboard, 60000);
     this.setState({intervalId: intervalId});
   }
 

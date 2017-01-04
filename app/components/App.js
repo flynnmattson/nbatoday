@@ -4,7 +4,7 @@ import Navbar from './Navbar.js';
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div id='nba'>
         <Navbar history={this.props.history} />
         <div className='container' style={{paddingTop: '40px'}}>
           {this.props.children}

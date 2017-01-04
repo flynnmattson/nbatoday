@@ -4,11 +4,13 @@ import GameActions from '../actions/GameActions';
 class GameStore {
   constructor() {
     this.bindActions(GameActions);
-    this.game = {};
+    this.teamStats = [];
+    this.playerStats = [];
   }
 
   onGetGameSuccess(data) {
-    this.game = data;
+    this.teamStats = data.team_stats;
+    this.playerStats = data.player_stats;
   }
 
   onGetGameFail(errorMessage) {
