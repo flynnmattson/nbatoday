@@ -1,0 +1,78 @@
+import React from 'react';
+import {Link} from 'react-router';
+import HomeStore from '../stores/HomeStore';
+import HomeActions from '../actions/HomeActions';
+import Standings from './Standings';
+import Constants from '../constants.json';
+
+class Home extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = HomeStore.getState();
+    this.onChange = this.onChange.bind(this);
+    this.refreshScoreboard = this.refreshScoreboard.bind(this);
+  }
+
+  refreshScoreboard(){
+    HomeActions.getScoreboard();
+  }
+
+  componentDidMount(){
+    HomeStore.listen(this.onChange);
+    HomeActions.getScoreboard();
+    // Set interval to continually refresh the scoreboard for the user.
+    var intervalId = setInterval(this.refreshScoreboard, 10000);
+    this.setState({intervalId: intervalId});
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.state.intervalId);
+    HomeStore.unlisten(this.onChange);
+  }
+
+  onChange(state){
+    this.setState(state);
+  }
+
+  render(){
+    var gameScores = this.state.scoreboard.map((sb, index) => {
+      return (
+        <div key={sb.GAME_ID} className={index % 2 === 0 ? 'col-xs-6 col-sm-6 col-md-5 col-md-offset-1' : 'col-xs-6 col-sm-6 col-md-5'}>
+          <div className='row card scoreboard fadeInUp animated'>
+            <Link to={'/game/'+sb.GAME_ID}>
+              <div key={sb.HOME_TEAM_ID} className='col-xs-6 col-sm-6 col-md-5 col-md-offset-1 cardLeft text-center' style={{backgroundColor: '#'+Constants[sb.homeTeam.TEAM_ABBREVIATION].colors[0], border: '4px solid #'+Constants[sb.homeTeam.TEAM_ABBREVIATION].colors[1]}}>
+                <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+sb.homeTeam.TEAM_ABBREVIATION+'_logo.svg'} />
+                <h1 style={{color:'#'+Constants[sb.homeTeam.TEAM_ABBREVIATION].colors[1], marginTop:'10px'}}>{sb.homeTeam.TEAM_ABBREVIATION}</h1>
+                <h2 style={{color:'#'+Constants[sb.homeTeam.TEAM_ABBREVIATION].colors[1]}}>{sb.homeTeam.PTS !== null ? sb.homeTeam.PTS : '-'}</h2>
+              </div>
+              <div key={sb.VISITOR_TEAM_ID} className='col-xs-6 col-sm-6 col-md-5 text-center' style={{backgroundColor: '#'+Constants[sb.visitorTeam.TEAM_ABBREVIATION].colors[0], border: '4px solid #'+Constants[sb.visitorTeam.TEAM_ABBREVIATION].colors[1]}}>
+                <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+sb.visitorTeam.TEAM_ABBREVIATION+'_logo.svg'} />
+                <h1 style={{color:'#'+Constants[sb.visitorTeam.TEAM_ABBREVIATION].colors[1], marginTop:'10px'}}>{sb.visitorTeam.TEAM_ABBREVIATION}</h1>
+                <h2 style={{color:'#'+Constants[sb.visitorTeam.TEAM_ABBREVIATION].colors[1]}}>{sb.visitorTeam.PTS !== null ? sb.visitorTeam.PTS : '-'}</h2>
+              </div>
+              <div className='col-md-12 text-center'>
+                {(sb.LIVE_PC_TIME && sb.LIVE_PC_TIME.trim() !== '' ? sb.LIVE_PC_TIME.trim()+' in ' : '')}
+                {sb.GAME_STATUS_TEXT}
+                {(sb.NATL_TV_BROADCASTER_ABBREVIATION ? ' on '+sb.NATL_TV_BROADCASTER_ABBREVIATION : '')}
+                {' - @'+sb.homeTeam.TEAM_CITY_NAME}
+              </div>
+            </Link>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='row'>
+        <div className='col-xs-10 col-sm-10 col-md-10'>
+          {gameScores}
+        </div>
+        <div className='col-xs-2 col-sm-2 col-md-2 standings'>
+          <Standings />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Home;
