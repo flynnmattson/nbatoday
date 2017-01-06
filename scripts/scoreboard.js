@@ -7,8 +7,7 @@ function Scoreboard(){
     this.host = 'stats.nba.com';
 }
 
-Scoreboard.prototype.getScoreboard = function(gameDate, callback){
-  let dateString = (gameDate.getMonth()+1)+'/'+gameDate.getDate()+'/'+gameDate.getFullYear();
+Scoreboard.prototype.getScoreboard = function(dateString, callback){
   let options = {
     host : this.host,
     path : '/stats/scoreboard/?GameDate='+dateString+'&LeagueID=00&DayOffset=0',

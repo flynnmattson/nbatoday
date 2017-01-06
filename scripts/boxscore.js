@@ -93,4 +93,40 @@ Boxscore.prototype.getBoxscore = function(gameId, callback){
   });
 }
 
+Boxscore.prototype.getPlaybyPlay = function(gameId, callback){
+  var params = 'GameID='+gameId+'&StartPeriod=0&EndPeriod=0',
+      options = {
+        host : this.host,
+        path : '/stats/playbyplayv2/?'+params,
+        headers : {
+          'Referer' : 'http://stats.nba.com/scores/'
+        }
+      };
+
+  HTTP.get(options, (res) => {
+    let rawData = '';
+    res.setEncoding('utf8');
+    this.statusCode = res.statusCode;
+
+    if(res.statusCode !== 200){
+      console.log('Error: failed to retrieve data from nba script, status code '+this.statusCode);
+      res.resume();
+    }
+
+    res.on('data', (chunk) => {rawData += chunk});
+    res.on('end', () => {
+      try{
+        this.results['play_by_play'] = JSON.parse(rawData);
+        callback();
+      }catch(e){
+        console.log(e.message);
+        callback(e);
+      }
+    });
+  }).on('error', (e) => {
+    console.log(e.message);
+    callback(e);
+  });
+}
+
 module.exports = Boxscore;

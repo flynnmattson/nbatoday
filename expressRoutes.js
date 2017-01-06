@@ -1,4 +1,5 @@
 const Promise = require('promise');
+const moment = require('moment-timezone');
 const SCOREBOARD = require('./scripts/scoreboard');
 const BOXSCORE = require('./scripts/boxscore');
 var scoreBoard = new SCOREBOARD(),
@@ -39,7 +40,7 @@ function expressRoutes(app){
       return games;
     }
 
-    scoreBoard.getScoreboard(new Date(), (err) => {
+    scoreBoard.getScoreboard(moment().tz('US/Pacific').format('M/D/YYYY'), (err) => {
       if(scoreBoard.statusCode === 200 && !err){
         res.send(processData());
       }else{
@@ -66,7 +67,7 @@ function expressRoutes(app){
       return standings;
     }
 
-    scoreBoard.getScoreboard(new Date(), (err) => {
+    scoreBoard.getScoreboard(moment().tz('US/Pacific').format('M/D/YYYY'), (err) => {
       if(scoreBoard.statusCode === 200 && !err){
         res.send({
           east : processData(scoreBoard.results['scoreboard'].resultSets[4]),

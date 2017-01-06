@@ -23,6 +23,7 @@ class Game extends React.Component{
   }
 
   render(){
+    console.log(this.state.teamStats);
     var teamCards = this.state.teamStats.map((team, index) => {
       return (
         <div key={team.TEAM_ID} className='col-xs-6 col-sm-6 col-md-6 text-center fadeInUp animated card teamCard'>
