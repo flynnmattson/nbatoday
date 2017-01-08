@@ -11,7 +11,7 @@ class Standings extends React.Component{
 
   componentDidMount(){
     StandingsStore.listen(this.onChange);
-    StandingsActions.getStandings();
+    StandingsActions.getStandings(+this.state.todaysDate);
   }
 
   componentWillUnmount(){

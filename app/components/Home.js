@@ -4,34 +4,39 @@ import HomeStore from '../stores/HomeStore';
 import HomeActions from '../actions/HomeActions';
 import Standings from './Standings';
 import Constants from '../constants.json';
+import moment from 'moment-timezone';
 
 class Home extends React.Component{
   constructor(props){
     super(props);
     this.state = HomeStore.getState();
     this.onChange = this.onChange.bind(this);
-    this.refreshScoreboard = this.refreshScoreboard.bind(this);
+    this.refreshScoreboard = this.refreshScoreboard.bind(this, +this.state.pickedDate);
   }
 
-  refreshScoreboard(){
-    HomeActions.getScoreboard();
+  refreshScoreboard(epochDate){
+    HomeActions.getScoreboard(epochDate);
   }
 
   componentDidMount(){
     HomeStore.listen(this.onChange);
-    HomeActions.getScoreboard();
+    HomeActions.getScoreboard(+this.state.pickedDate);
     // Set interval to continually refresh the scoreboard every minute for the user.
-    var intervalId = setInterval(this.refreshScoreboard, 60000);
-    this.setState({intervalId: intervalId});
+    // var intervalId = setInterval(this.refreshScoreboard, 60000);
+    // this.setState({intervalId: intervalId});
   }
 
   componentWillUnmount(){
-    clearInterval(this.state.intervalId);
+    // clearInterval(this.state.intervalId);
     HomeStore.unlisten(this.onChange);
   }
 
   onChange(state){
     this.setState(state);
+  }
+
+  changeDate(changeAmt){
+    HomeActions.getScoreboard(+this.state.pickedDate+changeAmt);
   }
 
   render(){
@@ -65,6 +70,14 @@ class Home extends React.Component{
     return (
       <div className='row'>
         <div className='col-xs-10 col-sm-10 col-md-10'>
+          <div className='col-xs-12 col-sm-12 col-md-12 text-center'>
+            <div className='row'>
+              <button className='btn btn-transparent glyphicon glyphicon-chevron-left'
+                      onClick={this.changeDate.bind(this, -this.state.oneDay)}></button>
+              <span className='datePicker'>{this.state.pickedDate.format('M/D/YYYY')}</span>
+              <button className='btn btn-transparent glyphicon glyphicon-chevron-right' onClick={this.changeDate.bind(this, +this.state.oneDay)} disabled={+this.state.pickedDate === +this.state.todaysDate}></button>
+            </div>
+          </div>
           {gameScores}
         </div>
         <div className='col-xs-2 col-sm-2 col-md-2 standings'>

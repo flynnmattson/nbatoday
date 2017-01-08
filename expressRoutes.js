@@ -1,21 +1,18 @@
 const Promise = require('promise');
-const moment = require('moment-timezone');
-const SCOREBOARD = require('./scripts/scoreboard');
-const BOXSCORE = require('./scripts/boxscore');
-var scoreBoard = new SCOREBOARD(),
-    boxScore = new BOXSCORE();
+const NBA = require('./scripts/nba');
+var nba = new NBA();
 
 function expressRoutes(app){
   /**
    * GET /api/scoreboard
    * Returns array of live games and their scores along with other team info on the games.
    */
-  app.get('/api/scoreboard', function(req, res, next) {
-    function processData(){
-      var gameHeaders = scoreBoard.results['scoreboard'].resultSets[0].headers,
-          gameHeadersData = scoreBoard.results['scoreboard'].resultSets[0].rowSet,
-          lineHeaders = scoreBoard.results['scoreboard'].resultSets[1].headers,
-          lineData = scoreBoard.results['scoreboard'].resultSets[1].rowSet,
+  app.get('/api/scoreboard/:epochDate', function(req, res, next) {
+    function processData(data){
+      var gameHeaders = data.resultSets[0].headers,
+          gameHeadersData = data.resultSets[0].rowSet,
+          lineHeaders = data.resultSets[1].headers,
+          lineData = data.resultSets[1].rowSet,
           games = [],
           temp = {};
       for(let i=0; i<gameHeadersData.length; i++){
@@ -40,9 +37,9 @@ function expressRoutes(app){
       return games;
     }
 
-    scoreBoard.getScoreboard(moment().tz('US/Pacific').format('M/D/YYYY'), (err) => {
-      if(scoreBoard.statusCode === 200 && !err){
-        res.send(processData());
+    nba.getScoreboard(parseInt(req.params.epochDate), (result, err) => {
+      if(nba.statusCode === 200 && !err && result){
+        res.send(processData(result));
       }else{
         return next(err);
       }
@@ -53,7 +50,7 @@ function expressRoutes(app){
    * GET /api/standings
    * Returns the standings for both eastern and western conferences.
    */
-  app.get('/api/standings', function(req, res, next) {
+  app.get('/api/standings/:epochDate', function(req, res, next) {
     function processData(standingsObj){
       var standings = [];
       let temp = {};
@@ -67,11 +64,11 @@ function expressRoutes(app){
       return standings;
     }
 
-    scoreBoard.getScoreboard(moment().tz('US/Pacific').format('M/D/YYYY'), (err) => {
-      if(scoreBoard.statusCode === 200 && !err){
+    nba.getScoreboard(parseInt(req.params.epochDate), (result, err) => {
+      if(nba.statusCode === 200 && !err && result){
         res.send({
-          east : processData(scoreBoard.results['scoreboard'].resultSets[4]),
-          west : processData(scoreBoard.results['scoreboard'].resultSets[5])
+          east : processData(result.resultSets[4]),
+          west : processData(result.resultSets[5])
         });
       }else{
         return next(err);
@@ -81,10 +78,10 @@ function expressRoutes(app){
 
   /**
    * GET /api/game/:id
-   * Returns information on both teams for a specific game
+   * Returns information on both teams for a specific game,
+   * NOTE: ONLY RETURNS DATA THE DAY AFTER THE GAME
    */
   app.get('/api/game/:id', function(req, res, next) {
-    var gameId = req.params.id;
     function processData(gameObj){
       var stats = [];
       let temp = {};
@@ -97,11 +94,11 @@ function expressRoutes(app){
       }
       return stats;
     }
-    boxScore.getBoxscore(gameId, (err) => {
-      if(boxScore.statusCode === 200 && !err){
+    nba.getBoxscore(req.params.id, (result, err) => {
+      if(nba.statusCode === 200 && !err && result){
         res.send({
-          player_stats: processData(boxScore.results['boxscore'].resultSets[0]),
-          team_stats: processData(boxScore.results['boxscore'].resultSets[1])
+          player_stats: processData(result.resultSets[0]),
+          team_stats: processData(result.resultSets[1])
         });
       }else{
         return next(err);
