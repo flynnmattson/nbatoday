@@ -1,9 +1,9 @@
-import alt from '../alt';
-import GameActions from '../actions/GameActions';
+import alt from '../../alt';
+import PostGameActions from '../../actions/game/PostGameActions';
 
-class GameStore {
+class PostGameStore {
   constructor() {
-    this.bindActions(GameActions);
+    this.bindActions(PostGameActions);
     this.teamStats = [];
     this.playerStats = [];
   }
@@ -18,4 +18,4 @@ class GameStore {
   }
 }
 
-export default alt.createStore(GameStore);
+export default alt.createStore(PostGameStore);

@@ -79,7 +79,7 @@ function expressRoutes(app){
   /**
    * GET /api/game/:id
    * Returns information on both teams for a specific game,
-   * NOTE: ONLY RETURNS DATA THE DAY AFTER THE GAME
+   * NOTE: ONLY RETURNS DATA AFTER THE GAME
    */
   app.get('/api/game/:id', function(req, res, next) {
     function processData(gameObj){
@@ -100,6 +100,61 @@ function expressRoutes(app){
           player_stats: processData(result.resultSets[0]),
           team_stats: processData(result.resultSets[1])
         });
+      }else{
+        return next(err);
+      }
+    });
+  });
+
+  /**
+   * GET /api/game_summary/:id
+   * Returns summary information on both teams for a specific game
+   */
+  app.get('/api/game_summary/:id', function(req, res, next) {
+    function processData(gameObj){
+      var stats = [];
+      let temp = {};
+      for(let i=0; i<gameObj.rowSet.length; i++){
+        temp = {};
+        for(let j=0; j<gameObj.headers.length; j++){
+          temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+        }
+        stats.push(temp);
+      }
+      return stats;
+    }
+    nba.getBoxscoreSummary(req.params.id, (result, err) => {
+      if(nba.statusCode === 200 && !err && result){
+        res.send({
+          summary: processData(result.resultSets[0]),
+          score: processData(result.resultSets[5])
+        });
+      }else{
+        return next(err);
+      }
+    });
+  });
+
+  /**
+   * GET /api/play_by_play/:id
+   * Returns play by play stats for a specific game
+   */
+  app.get('/api/play_by_play/:id', function(req, res, next) {
+    function processData(gameObj){
+      var stats = [];
+      let temp = {};
+      for(let i=0; i<gameObj.rowSet.length; i++){
+        temp = {};
+        for(let j=0; j<gameObj.headers.length; j++){
+          temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+        }
+        stats.push(temp);
+      }
+      return stats;
+    }
+    nba.getPlaybyPlay(req.params.id, (result, err) => {
+      if(nba.statusCode === 200 && !err && result){
+        res.send(result);
       }else{
         return next(err);
       }

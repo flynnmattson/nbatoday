@@ -1,7 +1,6 @@
 import alt from '../alt';
 import HomeActions from '../actions/HomeActions';
 import helper from '../helper';
-import cache from '../cache';
 
 class HomeStore {
   constructor() {
@@ -13,13 +12,15 @@ class HomeStore {
   }
 
   onGetScoreboardSuccess(data) {
-    cache.setCache('scoreboard_'+data.epochDate, data.data);
-    this.scoreboard = data.data;
-    this.pickedDate = helper.getDate(data.epochDate);
+    this.scoreboard = data;
   }
 
   onGetScoreboardFail(errorMessage) {
     toastr.error(errorMessage);
+  }
+
+  onChangeDate(epochDate){
+    this.pickedDate = helper.getDate(epochDate);
   }
 }
 

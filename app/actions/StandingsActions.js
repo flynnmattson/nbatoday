@@ -15,6 +15,7 @@ class StandingsActions {
     }else{
       $.ajax({ url: '/api/standings/'+epochDate })
       .done(data => {
+        cache.setCache('standings', data);
         this.actions.getStandingsSuccess(data);
       })
       .fail(jqXhr => {

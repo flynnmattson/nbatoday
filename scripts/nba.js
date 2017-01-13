@@ -62,6 +62,7 @@ Nba.prototype.getScoreboard = function(theDate, callback){
   });
 }
 
+// NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getBoxscoreSummary = function(gameId, callback){
   this.getData('/stats/boxscoresummaryv2/?GameID='+gameId, function(result, err){
     if(err && !result){callback(null, err);}
@@ -69,7 +70,7 @@ Nba.prototype.getBoxscoreSummary = function(gameId, callback){
   });
 }
 
-// NOTE: ONLY WORKS THE FOLLOWING DAY OF THE GAME. DOES NOT RETURN DATA THE DAY OF THE GAME.
+// NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getBoxscore = function(gameId, callback){
   let params = 'GameID='+gameId+'&StartPeriod=0&EndPeriod=0&StartRange=0&EndRange=0&RangeType=0';
   this.getData('/stats/boxscoretraditionalv2/?'+params, function(result, err){
@@ -78,6 +79,7 @@ Nba.prototype.getBoxscore = function(gameId, callback){
   });
 }
 
+// NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getPlaybyPlay = function(gameId, callback){
   let params = 'GameID='+gameId+'&StartPeriod=0&EndPeriod=0';
   this.getData('/stats/playbyplayv2/?'+params, function(result, err){
