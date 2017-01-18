@@ -5,7 +5,8 @@ class PostGameActions {
   constructor() {
     this.generateActions(
       'getGameSuccess',
-      'getGameFail'
+      'getGameFail',
+      'changeTab'
     );
   }
 

@@ -6,6 +6,7 @@ class PostGameStore {
     this.bindActions(PostGameActions);
     this.teamStats = [];
     this.playerStats = [];
+    this.tabState = 'Player';
   }
 
   onGetGameSuccess(data) {
@@ -15,6 +16,10 @@ class PostGameStore {
 
   onGetGameFail(errorMessage) {
     toastr.error(errorMessage);
+  }
+
+  onChangeTab(ts){
+    this.tabState = ts;
   }
 }
 

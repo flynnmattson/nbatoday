@@ -46,20 +46,22 @@ class Game extends React.Component{
 
     return (
       <div className='row card teamCard'>
-        <div className='col-xs-5 col-sm-5 col-md-5 text-center fadeInUp animated'>
-          <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+visitorTeam.TEAM_ABBREVIATION+'_logo.svg'} />
-          <h2>{visitorTeam.TEAM_CITY_NAME} {visitorTeam.TEAM_NICKNAME}</h2>
-          <h1>{(visitorTeam.PTS !== null ? visitorTeam.PTS : '-')}</h1>
-        </div>
-        <div className='col-xs-2 col-sm-2 col-md-2 text-center' style={{bottom:0}}>
-          <h1>@</h1>
-          <br />
-          <h2>{(this.state.gameSummary.LIVE_PC_TIME && this.state.gameSummary.LIVE_PC_TIME.trim() !== '' ? this.state.gameSummary.LIVE_PC_TIME.trim()+' in ' : '')}{this.state.gameSummary.GAME_STATUS_TEXT}</h2>
-        </div>
-        <div className='col-xs-5 col-sm-5 col-md-5 text-center fadeInUp animated'>
-          <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+homeTeam.TEAM_ABBREVIATION+'_logo.svg'} />
-          <h2>{homeTeam.TEAM_CITY_NAME} {homeTeam.TEAM_NICKNAME}</h2>
-          <h1>{(homeTeam.PTS !== null ? homeTeam.PTS : '-')}</h1>
+        <div className='row game-summary'>
+          <div className='col-xs-5 col-sm-5 col-md-5 text-center fadeInUp animated'>
+            <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+visitorTeam.TEAM_ABBREVIATION+'_logo.svg'} />
+            <h2>{visitorTeam.TEAM_CITY_NAME} {visitorTeam.TEAM_NICKNAME}</h2>
+            <h1>{(visitorTeam.PTS !== null ? visitorTeam.PTS : '-')}</h1>
+          </div>
+          <div className='col-xs-2 col-sm-2 col-md-2 text-center' style={{bottom:0}}>
+            <h1>@</h1>
+            <br />
+            <h2>{(this.state.gameSummary.LIVE_PC_TIME && this.state.gameSummary.LIVE_PC_TIME.trim() !== '' ? this.state.gameSummary.LIVE_PC_TIME.trim()+' in ' : '')}{this.state.gameSummary.GAME_STATUS_TEXT}</h2>
+          </div>
+          <div className='col-xs-5 col-sm-5 col-md-5 text-center fadeInUp animated'>
+            <img className='team-img' type='image/svg+xml' src={'http://stats.nba.com/media/img/teams/logos/'+homeTeam.TEAM_ABBREVIATION+'_logo.svg'} />
+            <h2>{homeTeam.TEAM_CITY_NAME} {homeTeam.TEAM_NICKNAME}</h2>
+            <h1>{(homeTeam.PTS !== null ? homeTeam.PTS : '-')}</h1>
+          </div>
         </div>
         <div className='col-xs-12 col-sm-12 col-md-12 fadeInUp animated'>
           {detailSection}
