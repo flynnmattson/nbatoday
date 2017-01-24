@@ -15,6 +15,7 @@ const moment = require('moment-timezone');
 //  boxscoreadvanced
 //  boxscore
 //  boxscorefourfactors
+//  shotchart
 
 function Nba(){
   this.statusCode = 400;
@@ -56,35 +57,134 @@ function Nba(){
 
 Nba.prototype.getScoreboard = function(theDate, callback){
   let dateString = moment(theDate).tz('US/Pacific').format('M/D/YYYY');
+  function processData(data){
+    var gameHeaders = data.resultSets[0].headers,
+        gameHeadersData = data.resultSets[0].rowSet,
+        lineHeaders = data.resultSets[1].headers,
+        lineData = data.resultSets[1].rowSet,
+        games = [],
+        temp = {};
+    for(let i=0; i<gameHeadersData.length; i++){
+      temp = {};
+      for(let j=0; j<gameHeaders.length; j++){
+        temp[gameHeaders[j]] = gameHeadersData[i][j];
+      }
+      games.push(temp);
+    }
+    for(let i=0; i<lineData.length; i++){
+      temp = {};
+      for(let j=0; j<lineHeaders.length; j++){
+        temp[lineHeaders[j]] = lineData[i][j];
+      }
+      for(let j=0; j<games.length; j++){
+        if(games[j].HOME_TEAM_ID === temp.TEAM_ID)
+        games[j].homeTeam = temp;
+        else if(games[j].VISITOR_TEAM_ID === temp.TEAM_ID)
+        games[j].visitorTeam = temp;
+      }
+    }
+    return games;
+  }
   this.getData('/stats/scoreboard/?GameDate='+dateString+'&LeagueID=00&DayOffset=0', function(result, err){
     if(err && !result){callback(null, err);}
-    else{callback(result);}
+    else{callback(processData(result));}
+  });
+}
+
+Nba.prototype.getStandings = function(theDate, callback){
+  let dateString = moment(theDate).tz('US/Pacific').format('M/D/YYYY');
+  function processData(standingsObj){
+    var standings = [];
+    let temp = {};
+    for(let i=0; i<standingsObj.rowSet.length; i++){
+      temp = {};
+      for(let j=0; j<standingsObj.headers.length; j++){
+        temp[standingsObj.headers[j]] = standingsObj.rowSet[i][j];
+      }
+      standings.push(temp);
+    }
+    return standings;
+  }
+  this.getData('/stats/scoreboard/?GameDate='+dateString+'&LeagueID=00&DayOffset=0', function(result, err){
+    if(err && !result){callback(null, err);}
+    else{
+      callback({
+        east : processData(result.resultSets[4]),
+        west : processData(result.resultSets[5])
+      });
+    }
   });
 }
 
 // NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getBoxscoreSummary = function(gameId, callback){
+  function processData(gameObj){
+    var stats = [];
+    let temp = {};
+    for(let i=0; i<gameObj.rowSet.length; i++){
+      temp = {};
+      for(let j=0; j<gameObj.headers.length; j++){
+        temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+      }
+      stats.push(temp);
+    }
+    return stats;
+  }
   this.getData('/stats/boxscoresummaryv2/?GameID='+gameId, function(result, err){
     if(err && !result){callback(null, err);}
-    else{callback(result);}
+    else{
+      callback({
+        summary: processData(result.resultSets[0]),
+        score: processData(result.resultSets[5])
+      });
+    }
   });
 }
 
 // NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getBoxscore = function(gameId, callback){
   let params = 'GameID='+gameId+'&StartPeriod=0&EndPeriod=0&StartRange=0&EndRange=0&RangeType=0';
+  function processData(gameObj){
+    var stats = [];
+    let temp = {};
+    for(let i=0; i<gameObj.rowSet.length; i++){
+      temp = {};
+      for(let j=0; j<gameObj.headers.length; j++){
+        temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+      }
+      stats.push(temp);
+    }
+    return stats;
+  }
   this.getData('/stats/boxscoretraditionalv2/?'+params, function(result, err){
     if(err && !result){callback(null, err);}
-    else{callback(result);}
+    else{
+      callback({
+        player_stats: processData(result.resultSets[0]),
+        team_stats: processData(result.resultSets[1])
+      });
+    }
   });
 }
 
 // NOTE: ONLY WORKS AFTER THE GAME
 Nba.prototype.getPlaybyPlay = function(gameId, callback){
   let params = 'GameID='+gameId+'&StartPeriod=0&EndPeriod=0';
+  function processData(gameObj){
+    var stats = [];
+    let temp = {};
+    for(let i=0; i<gameObj.rowSet.length; i++){
+      temp = {};
+      for(let j=0; j<gameObj.headers.length; j++){
+        temp[gameObj.headers[j]] = gameObj.rowSet[i][j];
+      }
+      stats.push(temp);
+    }
+    return stats;
+  }
   this.getData('/stats/playbyplayv2/?'+params, function(result, err){
     if(err && !result){callback(null, err);}
-    else{callback(result);}
+    else{callback(processData(result));}
   });
 }
 
