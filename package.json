@@ -9,7 +9,8 @@
   "main": "server.js",
   "scripts": {
     "test": "node server.js",
-    "watch": "nodemon server.js"
+    "watch": "nodemon server.js",
+    "postInstall": "bower install && gulp build"
   },
   "babel": {
     "presets": [
@@ -45,7 +46,7 @@
     "promise": "^7.1.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-router": "^1.0.0",
+    "react-router": "^2.8.1",
     "socket.io": "^1.3.7",
     "swig": "^1.4.2",
     "vinyl-buffer": "^1.0.0",
