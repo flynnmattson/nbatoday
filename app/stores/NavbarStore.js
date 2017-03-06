@@ -25,10 +25,6 @@ class NavbarStore {
     this.onlineUsers = data.onlineUsers;
   }
 
-  onUpdateAjaxAnimation(className) {
-    this.ajaxAnimationClass = className; //fadein or fadeout
-  }
-
   onUpdateSearchQuery(event) {
     this.searchQuery = event.target.value;
   }

@@ -253,6 +253,7 @@ td.name, th.name {
 .profile .navbar-default {
   background-color: transparent;
   border-bottom: 1px solid rgba(255,255,255,.15);
+  z-index: 1;
   box-shadow: none;
 }
 
@@ -828,14 +829,28 @@ label {
   animation-name: shake;
 }
 
+.loading {
+ position: absolute;
+ z-index: 2;
+ border: 1px solid #000;
+ left: 0;
+ top: 0;
+ bottom: 0;
+ right: 0;
+ background: #000;
+ opacity: 0.8;
+ filter: alpha(opacity=80);
+}
+
 @tricolor: @link-color;
-@triw: 10px;
+@triw: 30px;
 @trih: @triw*0.9;
 
 .triangles {
   position: absolute;
-  top: 25px;
-  left: 30px;
+  z-index: 3;
+  top: 500px;
+  left: 50%;
   height: @trih * 3;
   width: @triw * 3;
   transform: translate(-50%, -50%);

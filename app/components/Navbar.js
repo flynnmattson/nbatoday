@@ -19,16 +19,6 @@ class Navbar extends React.Component {
     socket.on('onlineUsers', (data) => {
       NavbarActions.updateOnlineUsers(data);
     });
-
-    $(document).ajaxStart(() => {
-      NavbarActions.updateAjaxAnimation('fadeIn');
-    });
-
-    $(document).ajaxComplete(() => {
-      setTimeout(() => {
-        NavbarActions.updateAjaxAnimation('fadeOut');
-      }, 750);
-    });
   }
 
   componentWillUnmount() {
@@ -55,7 +45,7 @@ class Navbar extends React.Component {
 
   render() {
     return (
-      <nav className='navbar navbar-default navbar-static-top'>
+      <nav className='navbar navbar-default'>
         <div className='navbar-header'>
           <button type='button' className='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar'>
             <span className='sr-only'>Toggle navigation</span>
@@ -64,17 +54,6 @@ class Navbar extends React.Component {
             <span className='icon-bar'></span>
           </button>
           <Link to='/' className='navbar-brand'>
-            <span ref='triangles' className={'triangles animated ' + this.state.ajaxAnimationClass}>
-              <div className='tri invert'></div>
-              <div className='tri invert'></div>
-              <div className='tri'></div>
-              <div className='tri invert'></div>
-              <div className='tri invert'></div>
-              <div className='tri'></div>
-              <div className='tri invert'></div>
-              <div className='tri'></div>
-              <div className='tri invert'></div>
-            </span>
             <span className='navTitle'>NBA TODAY</span>
             <span className='badge badge-up badge-danger'>{this.state.onlineUsers}</span>
           </Link>
