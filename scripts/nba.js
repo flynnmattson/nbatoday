@@ -23,8 +23,17 @@ function Nba(){
     host : 'stats.nba.com',
     path : '',
     headers : {
-      'Referer' : 'http://stats.nba.com/scores/',
-      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'
+      // 'Referer' : 'http://stats.nba.com/scores/',
+      // 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+      // 'Accept-Language': 'en-US,en;q=0.8,af;q=0.6',
+      // 'Accept-Encoding': 'gzip, deflate, sdch',
+      // 'Dnt': '1',
+      // 'origin': 'http://stats.nba.com'
+      'user-agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+      'Dnt': '1',
+      'Accept-Encoding': 'gzip, deflate, sdch',
+      'Accept-Language': 'en',
+      'origin': 'http://stats.nba.com'
     }
   };
   this.getData = function(path, callback){
@@ -42,6 +51,7 @@ function Nba(){
       res.on('data', (chunk) => rawData += chunk);
       res.on('end', () => {
         try{
+          console.log(rawData);
           callback(JSON.parse(rawData));
         }catch(e){
           console.log(e.message);
